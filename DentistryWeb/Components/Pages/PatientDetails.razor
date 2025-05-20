@@ -1,0 +1,125 @@
+﻿@page "/PatientDetails/{Id}"
+@using DentistryWeb.Models
+@using DentistryWeb.Services
+@inject PatientService PatientService
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="mb-3">
+        <a href="javascript:void(0)" @onclick="GoBack" class="btn btn-link">
+            <i class="oi oi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="patient-avatar mb-3">
+                        <img src="images/avatar.png" alt="Avatar" class="img-fluid rounded-circle" style="width: 150px; height: 150px;" />
+                    </div>
+                    <h4>@patient?.Name</h4>
+                    <p>ID bệnh nhân: @patient?.Id</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="patientTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info"
+                                    type="button" role="tab" aria-controls="info" aria-selected="true">
+                                Bệnh nhân
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
+                                    type="button" role="tab" aria-controls="history" aria-selected="false">
+                                Quá trình
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="exam-tab" data-bs-toggle="tab" data-bs-target="#exam"
+                                    type="button" role="tab" aria-controls="exam" aria-selected="false">
+                                Tái khám
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="service-tab" data-bs-toggle="tab" data-bs-target="#service"
+                                    type="button" role="tab" aria-controls="service" aria-selected="false">
+                                Dịch vụ
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3" id="patientTabsContent">
+                        <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Số điện thoại</label>
+                                    <p>@patient?.PhoneNumber</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Giới tính</label>
+                                    <p>@patient?.Gender</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Ngày sinh</label>
+                                    <p>@(patient != null ? patient.BirthDate.ToString("dd/MM/yyyy") : "")</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Nghề nghiệp</label>
+                                    <p>@patient?.Occupation</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Địa chỉ</label>
+                                    <p>@patient?.Address</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Ngày tạo hồ sơ</label>
+                                    <p>@(patient != null ? patient.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss") : "")</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                            <p class="text-muted">Thông tin quá trình điều trị sẽ hiển thị ở đây.</p>
+                        </div>
+                        <div class="tab-pane fade" id="exam" role="tabpanel" aria-labelledby="exam-tab">
+                            <p class="text-muted">Thông tin lịch tái khám sẽ hiển thị ở đây.</p>
+                        </div>
+                        <div class="tab-pane fade" id="service" role="tabpanel" aria-labelledby="service-tab">
+                            <p class="text-muted">Thông tin dịch vụ sẽ hiển thị ở đây.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-muted mt-3">Trang chi tiết bệnh nhân - PatientDetails</p>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Patient patient;
+
+    protected override void OnInitialized()
+    {
+        // Lấy thông tin bệnh nhân theo ID
+        patient = PatientService.GetPatientById(Id);
+    }
+
+    private void GoBack()
+    {
+        // Quay lại trang danh sách bệnh nhân
+        NavigationManager.NavigateTo("/Dentistry");
+    }
+}

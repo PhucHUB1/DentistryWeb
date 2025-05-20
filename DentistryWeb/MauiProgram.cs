@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DentistryWeb.Services;
+using Microsoft.Extensions.Logging;
 
 namespace DentistryWeb
 {
@@ -20,6 +21,7 @@ namespace DentistryWeb
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<PatientService>();
 
             return builder.Build();
         }

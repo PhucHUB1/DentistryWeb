@@ -1,0 +1,54 @@
+﻿@page "/EditPatient/{Id}"
+@using DentistryWeb.Models
+@using DentistryWeb.Services
+@inject PatientService PatientService
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <h3 class="my-3">Chỉnh sửa thông tin bệnh nhân @patient?.Name</h3>
+
+    @if (patient != null)
+    {
+        <EditForm Model="@patient" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="name" class="form-label">Họ và tên:</label>
+                    <InputText id="name" @bind-Value="patient.Name" class="form-control" />
+                    <ValidationMessage For="@(() => patient.Name)" />
+                </div>
+
+                <div class="col-md-4">
+                    <label for="phone" class="form-label">Số điện thoại:</label>
+                    <InputText id="phone" @bind-Value="patient.PhoneNumber" class="form-control" />
+                    <ValidationMessage For="@(() => patient.PhoneNumber)" />
+                </div>
+
+                <div class="col-md-4">
+                    <label for="gender" class="form-label">Giới tính:</label>
+                    <InputSelect id="gender" @bind-Value="patient.Gender" class="form-select">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => patient.Gender)" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="birthdate" class="form-label">Ngày sinh:</label>
+                    <InputDate id="birthdate" @bind-Value="patient.BirthDate" class="form-control" />
+                    <ValidationMessage For="@(() => patient.BirthDate)" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="occupation" class="form-label">Nghề nghiệp:</label>
+                    <InputText id="occupation" @bind-Value="patient.Occupation" class="form-control" />
+                    <ValidationMessage For="@(() => patient.Occupation)" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="

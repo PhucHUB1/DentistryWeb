@@ -1,0 +1,93 @@
+﻿@page "/AddPatient"
+@using DentistryWeb.Models
+@using DentistryWeb.Services
+@inject PatientService PatientService
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3>Thêm bệnh nhân</h3>
+            <button class="btn-close" @onclick="Cancel"></button>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@newPatient" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">Họ và tên:</label>
+                        <InputText id="name" @bind-Value="newPatient.Name" class="form-control" />
+                        <ValidationMessage For="@(() => newPatient.Name)" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="phone" class="form-label">Số điện thoại:</label>
+                        <InputText id="phone" @bind-Value="newPatient.PhoneNumber" class="form-control" />
+                        <ValidationMessage For="@(() => newPatient.PhoneNumber)" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="gender" class="form-label">Giới tính:</label>
+                        <InputSelect id="gender" @bind-Value="newPatient.Gender" class="form-select">
+                            <option value="">-- Chọn giới tính --</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </InputSelect>
+                        <ValidationMessage For="@(() => newPatient.Gender)" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="birthdate" class="form-label">Ngày sinh:</label>
+                        <InputDate id="birthdate" @bind-Value="newPatient.BirthDate" class="form-control" />
+                        <ValidationMessage For="@(() => newPatient.BirthDate)" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="occupation" class="form-label">Nghề nghiệp:</label>
+                        <InputText id="occupation" @bind-Value="newPatient.Occupation" class="form-control" />
+                        <ValidationMessage For="@(() => newPatient.Occupation)" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Địa chỉ:</label>
+                    <InputTextArea id="address" @bind-Value="newPatient.Address" class="form-control" rows="3" />
+                    <ValidationMessage For="@(() => newPatient.Address)" />
+                </div>
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary me-2" @onclick="Cancel">
+                        <i class="oi oi-x"></i> Đóng
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="oi oi-check"></i> Lưu
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <p class="text-muted mt-3">Cửa sổ thêm bệnh nhân - PatientAddDentistry</p>
+</div>
+
+@code {
+    private Patient newPatient = new Patient();
+
+    private void HandleValidSubmit()
+    {
+        // Thêm bệnh nhân mới
+        PatientService.AddPatient(newPatient);
+
+        // Quay lại trang danh sách bệnh nhân
+        NavigationManager.NavigateTo("/Dentistry");
+    }
+
+    private void Cancel()
+    {
+        // Hủy và quay lại trang danh sách bệnh nhân
+        NavigationManager.NavigateTo("/Dentistry");
+    }
+}
