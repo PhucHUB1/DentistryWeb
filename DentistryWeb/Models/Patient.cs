@@ -9,27 +9,13 @@ namespace DentistryWeb.Models
 {
     public class Patient
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
-        [Required(ErrorMessage = "Họ và tên không được để trống")]
-        public string Name { get; set; }
-
-        [Required(ErrorMessage = "Giới tính không được để trống")]
-        public string Gender { get; set; }
-
-        [Required(ErrorMessage = "Ngày sinh không được để trống")]
-        public DateTime BirthDate { get; set; }
-
-        [Required(ErrorMessage = "Nghề nghiệp không được để trống")]
-        public string Occupation { get; set; }
-
-        [Required(ErrorMessage = "Số điện thoại không được để trống")]
-        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-        public string PhoneNumber { get; set; }
-
-        [Required(ErrorMessage = "Địa chỉ không được để trống")]
-        public string Address { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
+        public DateTime DateOfBirth { get; set; }
+        public string Career { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

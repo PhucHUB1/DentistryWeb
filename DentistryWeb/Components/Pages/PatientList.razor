@@ -1,7 +1,7 @@
 ﻿@page "/PatientList"
 @using DentistryWeb.Models
 @using DentistryWeb.Services
-@inject PatientService PatientService
+@inject PatientServices PatientService
 @inject NavigationManager NavigationManager
 
 <div class="container">
@@ -30,13 +30,13 @@
             @foreach (var patient in patients)
             {
                 <tr>
-                    <td>@patient.Name</td>
-                    <td>@patient.Gender</td>
-                    <td>@patient.BirthDate.ToString("dd/MM/yyyy")</td>
-                    <td>@patient.Occupation</td>
-                    <td>@patient.PhoneNumber</td>
-                    <td>@patient.Address</td>
-                    <td>@patient.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@p.Name</td>
+                    <td>@p.Gender</td>
+                    <td>@p.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                    <td>@p.Career</td>
+                    <td>@p.Phone</td>
+                    <td>@p.Address</td>
+                    <td>@p.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn btn-sm btn-info" @onclick="() => ViewPatientDetails(patient.Id)">
@@ -64,7 +64,7 @@
     protected override void OnInitialized()
     {
         // Lấy danh sách bệnh nhân khi trang được khởi tạo
-        patients = PatientService.GetAllPatients();
+        patients = PatientService.GetAll();
     }
 
     private void AddNewPatient()
