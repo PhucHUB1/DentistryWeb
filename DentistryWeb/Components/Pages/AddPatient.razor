@@ -1,93 +1,85 @@
-﻿@page "/AddPatient"
-@using DentistryWeb.Models
+﻿@using DentistryWeb.Models
 @using DentistryWeb.Services
-@inject PatientService PatientService
-@inject NavigationManager NavigationManager
+@inject PatientServices PatientService
 
-<div class="container">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3>Thêm bệnh nhân</h3>
-            <button class="btn-close" @onclick="Cancel"></button>
-        </div>
-        <div class="card-body">
-            <EditForm Model="@newPatient" OnValidSubmit="HandleValidSubmit">
-                <DataAnnotationsValidator />
-
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="name" class="form-label">Họ và tên:</label>
-                        <InputText id="name" @bind-Value="newPatient.Name" class="form-control" />
-                        <ValidationMessage For="@(() => newPatient.Name)" />
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="phone" class="form-label">Số điện thoại:</label>
-                        <InputText id="phone" @bind-Value="newPatient.PhoneNumber" class="form-control" />
-                        <ValidationMessage For="@(() => newPatient.PhoneNumber)" />
-                    </div>
-
-                    <div class="col-md-4">
-                        <label for="gender" class="form-label">Giới tính:</label>
-                        <InputSelect id="gender" @bind-Value="newPatient.Gender" class="form-select">
-                            <option value="">-- Chọn giới tính --</option>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </InputSelect>
-                        <ValidationMessage For="@(() => newPatient.Gender)" />
-                    </div>
+@if (IsVisible)
+{
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm bệnh nhân</h5>
+                    <button type="button" class="btn-close" @onclick="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <EditForm Model="@newPatient" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="birthdate" class="form-label">Ngày sinh:</label>
-                        <InputDate id="birthdate" @bind-Value="newPatient.BirthDate" class="form-control" />
-                        <ValidationMessage For="@(() => newPatient.BirthDate)" />
-                    </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label>Họ và tên</label>
+                                <InputText class="form-control" @bind-Value="newPatient.Name" />
+                                <ValidationMessage For="@(() => newPatient.Name)" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>SĐT</label>
+                                <InputText class="form-control" @bind-Value="newPatient.Phone" />
+                                <ValidationMessage For="@(() => newPatient.Phone)" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Giới tính</label>
+                                <InputSelect class="form-select" @bind-Value="newPatient.Gender">
+                                    <option value="">-- Chọn --</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => newPatient.Gender)" />
+                            </div>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="occupation" class="form-label">Nghề nghiệp:</label>
-                        <InputText id="occupation" @bind-Value="newPatient.Occupation" class="form-control" />
-                        <ValidationMessage For="@(() => newPatient.Occupation)" />
-                    </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Ngày sinh</label>
+                                <InputDate class="form-control" @bind-Value="newPatient.DateOfBirth" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Nghề nghiệp</label>
+                                <InputText class="form-control" @bind-Value="newPatient.Career" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Địa chỉ</label>
+                            <InputTextArea class="form-control" @bind-Value="newPatient.Address" />
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Lưu</button>
+                            <button type="button" class="btn btn-secondary" @onclick="Close">Hủy</button>
+                        </div>
+                    </EditForm>
                 </div>
-
-                <div class="mb-3">
-                    <label for="address" class="form-label">Địa chỉ:</label>
-                    <InputTextArea id="address" @bind-Value="newPatient.Address" class="form-control" rows="3" />
-                    <ValidationMessage For="@(() => newPatient.Address)" />
-                </div>
-
-                <div class="text-end">
-                    <button type="button" class="btn btn-secondary me-2" @onclick="Cancel">
-                        <i class="oi oi-x"></i> Đóng
-                    </button>
-                    <button type="submit" class="btn btn-success">
-                        <i class="oi oi-check"></i> Lưu
-                    </button>
-                </div>
-            </EditForm>
+            </div>
         </div>
     </div>
-
-    <p class="text-muted mt-3">Cửa sổ thêm bệnh nhân - PatientAddDentistry</p>
-</div>
+    <div class="modal-backdrop fade show"></div>
+}
 
 @code {
-    private Patient newPatient = new Patient();
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
 
-    private void HandleValidSubmit()
+    private Patient newPatient = new();
+
+    private void Close() => IsVisibleChanged.InvokeAsync(false);
+
+    private async Task HandleValidSubmit()
     {
-        // Thêm bệnh nhân mới
-        PatientService.AddPatient(newPatient);
-
-        // Quay lại trang danh sách bệnh nhân
-        NavigationManager.NavigateTo("/Dentistry");
-    }
-
-    private void Cancel()
-    {
-        // Hủy và quay lại trang danh sách bệnh nhân
-        NavigationManager.NavigateTo("/Dentistry");
+        PatientService.Add(newPatient);
+        newPatient = new();
+        await OnSaved.InvokeAsync();
+        await IsVisibleChanged.InvokeAsync(false);
     }
 }

@@ -1,45 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using DentistryWeb.Models;
+﻿using DentistryWeb.Models;
 
 namespace DentistryWeb.Services
 {
     public class PatientServices
     {
-        private List<Patient> patients = new();
+        private readonly List<Patient> patients = new();
 
         public List<Patient> GetAll() => patients.OrderByDescending(p => p.CreatedAt).ToList();
 
         public Patient? GetById(Guid id) => patients.FirstOrDefault(p => p.Id == id);
 
-        public void Add(Patient patient)
+        public void Add(Patient p)
         {
-            patient.Id = Guid.NewGuid();
-            patient.CreatedAt = DateTime.Now;
-            patients.Add(patient);
+            p.Id = Guid.NewGuid();
+            p.CreatedAt = DateTime.Now;
+            patients.Add(p);
         }
 
-        public void Update(Patient updatedPatient)
+        public void Update(Patient p)
         {
-            var existing = GetById(updatedPatient.Id);
-            if (existing == null) return;
+            var existing = GetById(p.Id);
+            if (existing is null) return;
 
-            existing.Name = updatedPatient.Name;
-            existing.Gender = updatedPatient.Gender;
-            existing.DateOfBirth = updatedPatient.DateOfBirth;
-            existing.Phone = updatedPatient.Phone;
-            existing.Career = updatedPatient.Career;
-            existing.Address = updatedPatient.Address;
+            existing.Name = p.Name;
+            existing.Gender = p.Gender;
+            existing.DateOfBirth = p.DateOfBirth;
+            existing.Career = p.Career;
+            existing.Phone = p.Phone;
+            existing.Address = p.Address;
         }
 
         public void Delete(Guid id)
         {
             var p = GetById(id);
-            if (p != null)
+            if (p is not null)
                 patients.Remove(p);
         }
     }

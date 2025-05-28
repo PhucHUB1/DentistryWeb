@@ -21,7 +21,7 @@ namespace DentistryWeb
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddSingleton<PatientService>();
+            builder.Services.AddSingleton<PatientServices>();
 
             return builder.Build();
         }

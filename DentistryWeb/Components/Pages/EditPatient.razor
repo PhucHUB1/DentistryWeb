@@ -1,54 +1,77 @@
-﻿@page "/EditPatient/{Id}"
+﻿@page "/EditPatient/{Id:guid}"
 @using DentistryWeb.Models
 @using DentistryWeb.Services
-@inject PatientService PatientService
+@inject PatientServices PatientService
 @inject NavigationManager NavigationManager
 
-<div class="container">
-    <h3 class="my-3">Chỉnh sửa thông tin bệnh nhân @patient?.Name</h3>
-
-    @if (patient != null)
-    {
+@if (patient != null)
+{
+    <div class="container mt-3">
+        <h3>Chỉnh sửa thông tin bệnh nhân</h3>
         <EditForm Model="@patient" OnValidSubmit="HandleValidSubmit">
             <DataAnnotationsValidator />
+            <ValidationSummary />
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="name" class="form-label">Họ và tên:</label>
-                    <InputText id="name" @bind-Value="patient.Name" class="form-control" />
-                    <ValidationMessage For="@(() => patient.Name)" />
+                    <label>Họ tên</label>
+                    <InputText class="form-control" @bind-Value="patient.Name" />
                 </div>
-
                 <div class="col-md-4">
-                    <label for="phone" class="form-label">Số điện thoại:</label>
-                    <InputText id="phone" @bind-Value="patient.PhoneNumber" class="form-control" />
-                    <ValidationMessage For="@(() => patient.PhoneNumber)" />
+                    <label>SĐT</label>
+                    <InputText class="form-control" @bind-Value="patient.Phone" />
                 </div>
-
                 <div class="col-md-4">
-                    <label for="gender" class="form-label">Giới tính:</label>
-                    <InputSelect id="gender" @bind-Value="patient.Gender" class="form-select">
-                        <option value="">-- Chọn giới tính --</option>
+                    <label>Giới tính</label>
+                    <InputSelect class="form-select" @bind-Value="patient.Gender">
+                        <option value="">-- Chọn --</option>
                         <option value="Nam">Nam</option>
                         <option value="Nữ">Nữ</option>
                     </InputSelect>
-                    <ValidationMessage For="@(() => patient.Gender)" />
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="birthdate" class="form-label">Ngày sinh:</label>
-                    <InputDate id="birthdate" @bind-Value="patient.BirthDate" class="form-control" />
-                    <ValidationMessage For="@(() => patient.BirthDate)" />
+                    <label>Ngày sinh</label>
+                    <InputDate class="form-control" @bind-Value="patient.DateOfBirth" />
                 </div>
-
                 <div class="col-md-6">
-                    <label for="occupation" class="form-label">Nghề nghiệp:</label>
-                    <InputText id="occupation" @bind-Value="patient.Occupation" class="form-control" />
-                    <ValidationMessage For="@(() => patient.Occupation)" />
+                    <label>Nghề nghiệp</label>
+                    <InputText class="form-control" @bind-Value="patient.Career" />
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="
+                <label>Địa chỉ</label>
+                <InputTextArea class="form-control" @bind-Value="patient.Address" />
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Cập nhật</button>
+                <button type="button" class="btn btn-secondary" @onclick="Cancel">Hủy</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private Patient patient;
+
+    protected override void OnInitialized()
+    {
+        patient = PatientService.GetById(Id);
+    }
+
+    private void HandleValidSubmit()
+    {
+        PatientService.Update(patient);
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}
